@@ -25,8 +25,7 @@ const Sistema = {
         { tag: "Tecnologia", titulo: "Nano Proteção 9H", texto: "Uma barreira molecular impenetrável contra a ação do tempo." },
         { tag: "Excellence", titulo: "O Ápice do Cuidado", texto: "Seu veículo tratado com o rigor de uma obra de arte." }
     ],
-    cenaAtual: 0, 
-    filmeAtivo: false,
+    cenaAtual: 0, filmeAtivo: false,
 
     init: async function() {
         try { await signInAnonymously(auth); } catch(e) {}
@@ -37,8 +36,7 @@ const Sistema = {
         this.initScrollAnimations();
         this.initPWA();
         
-        // Trailer inicia automaticamente
-        setTimeout(() => this.abrirTrailer(), 1500);
+        setTimeout(() => this.abrirTrailer(), 2000);
     },
 
     cacheDom: function() {
@@ -54,7 +52,6 @@ const Sistema = {
 
     bindEvents: function() {
         if(this.dom.form) this.dom.form.addEventListener('submit', (e) => this.salvarFirebase(e));
-        
         if(this.dom.phoneInput) {
             this.dom.phoneInput.addEventListener('input', (e) => {
                 let v = e.target.value.replace(/\D/g, '');
@@ -77,7 +74,6 @@ const Sistema = {
         }
     },
 
-    // --- LÓGICA DO TRAILER CINEMÁTICO ---
     abrirTrailer: function() {
         if(!this.dom.trailerModal) return;
         this.dom.trailerModal.classList.add('active');
@@ -112,7 +108,7 @@ const Sistema = {
         setTimeout(() => {
             container.innerHTML = `
                 <span class="tagline" style="color:var(--gold); display:block; margin-bottom:20px; letter-spacing:5px;">${cena.tag}</span>
-                <h2 style="color:#fff; text-transform:uppercase;">${cena.titulo}</h2>
+                <h2 style="color:#fff;">${cena.titulo}</h2>
                 <p style="color:#777; font-weight:300; margin-top:30px; font-size:1.3rem;">${cena.texto}</p>
             `;
         }, 700);
@@ -127,7 +123,6 @@ const Sistema = {
         }, 5000);
     },
 
-    // --- EFEITOS DE LAYOUT ---
     initNavbarEffect: function() {
         window.addEventListener('scroll', () => {
             if (window.scrollY > 80) this.dom.navbar.classList.add('scrolled');
@@ -152,12 +147,15 @@ const Sistema = {
             slidesPerView: "auto",
             coverflowEffect: { rotate: 0, stretch: 0, depth: 150, modifier: 1, slideShadows: false },
             loop: true,
-            autoplay: { delay: 4000 },
-            pagination: { el: ".swiper-pagination", clickable: true }
+            autoplay: { delay: 4000, disableOnInteraction: false },
+            pagination: { el: ".swiper-pagination", clickable: true },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
         });
     },
 
-    // --- FIREBASE ---
     salvarFirebase: async function(e) {
         e.preventDefault();
         const btn = document.getElementById('btn-submit');
@@ -182,20 +180,18 @@ const Sistema = {
             setTimeout(() => this.dom.toast.classList.remove('show'), 3500);
             this.dom.form.reset();
         } catch (err) {
-            alert("Erro na conexão. Verifique seu sinal.");
+            alert("Erro na conexão.");
         } finally {
             btn.innerHTML = originalText;
             btn.disabled = false;
         }
     },
 
-    // --- PWA INSTALAÇÃO REAL ---
     initPWA: function() {
-        // 1. Criar o Manifest dinamicamente
         const manifest = {
             name: "BlackFilms Auto Spa",
             short_name: "BlackFilms",
-            description: "Estética Automotiva Premium e Blindagem Química",
+            description: "Estética Automotiva Premium",
             start_url: "/",
             display: "standalone",
             background_color: "#050505",
@@ -205,41 +201,30 @@ const Sistema = {
                 { src: "BlackFilms.jpg", sizes: "512x512", type: "image/jpeg" }
             ]
         };
-        const stringManifest = JSON.stringify(manifest);
-        const blob = new Blob([stringManifest], {type: 'application/json'});
-        const manifestURL = URL.createObjectURL(blob);
+        const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
         const link = document.createElement('link');
         link.rel = 'manifest';
-        link.href = manifestURL;
+        link.href = URL.createObjectURL(blob);
         document.head.appendChild(link);
 
-        // 2. Registrar Service Worker (Vazio, mas necessário para install prompt)
         if ('serviceWorker' in navigator) {
-            const swCode = `self.addEventListener('fetch', (event) => { /* Cache logic can go here */ });`;
+            const swCode = `self.addEventListener('fetch', (event) => {});`;
             const swBlob = new Blob([swCode], {type: 'application/javascript'});
-            const swURL = URL.createObjectURL(swBlob);
-            navigator.serviceWorker.register(swURL);
+            navigator.serviceWorker.register(URL.createObjectURL(swBlob));
         }
 
-        // 3. Capturar o gatilho de instalação
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             this.deferredPrompt = e;
-            // O botão de instalação no HTML já está visível
         });
     },
 
     instalarApp: async function() {
         if (this.deferredPrompt) {
             this.deferredPrompt.prompt();
-            const { outcome } = await this.deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                console.log('User installed the app');
-            }
             this.deferredPrompt = null;
         } else {
-            // Caso o navegador não suporte o prompt automático (ex: iOS)
-            alert("Para instalar:\n\nNo iPhone: Toque no ícone de compartilhar e selecione 'Adicionar à Tela de Início'.\n\nNo PC/Android: Verifique o ícone de instalação na barra de endereços.");
+            alert("Usa o menu do navegador para instalar.");
         }
     }
 };

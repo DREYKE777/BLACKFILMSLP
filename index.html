@@ -20,10 +20,10 @@
     <!-- Font Awesome (Ícones Oficiais) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Swiper (Slider Profissional) -->
+    <!-- Swiper -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-    <!-- Link para o CSS Externo -->
+    <!-- Link para o teu CSS Externo -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -63,20 +63,31 @@
     <!-- HERO SECTION -->
     <main id="home" class="hero">
         <div class="container">
-            <div class="hero-content scroll-trigger">
-                <span class="tagline">Engineering Perfection</span>
-                <h1>
-                    <span class="text-gradient">Design de Elite</span><br>
-                    Proteção de Luxo.
-                </h1>
-                <p>Redefinimos o conceito de estética automotiva com tecnologia molecular e acabamento artesanal de alto padrão.</p>
-                
-                <div class="hero-actions">
-                    <a href="#agendamento" class="btn-primary">Reserve sua Vaga</a>
-                    <div class="stats-box">
-                        <div class="stat"><strong>250+</strong><span>Projetos</span></div>
-                        <div class="separator"></div>
-                        <div class="stat"><strong>9H</strong><span>Dureza</span></div>
+            <div class="hero-wrapper">
+                <div class="hero-content scroll-trigger">
+                    <span class="tagline">Engineering Perfection</span>
+                    <h1>
+                        <span class="text-gradient">Design de Elite</span><br>
+                        Proteção de Luxo.
+                    </h1>
+                    <p>Redefinimos o conceito de estética automotiva com tecnologia molecular e acabamento artesanal de alto padrão.</p>
+                    
+                    <div class="hero-actions">
+                        <a href="#agendamento" class="btn-primary">Reserve sua Vaga</a>
+                        <div class="stats-box">
+                            <div class="stat"><strong>250+</strong><span>Projetos</span></div>
+                            <div class="separator"></div>
+                            <div class="stat"><strong>9H</strong><span>Dureza</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-video-container scroll-trigger">
+                    <div class="video-frame">
+                        <video autoplay loop muted playsinline class="hero-main-video">
+                            <source src="Video-328 lancer.mp4" type="video/mp4">
+                        </video>
+                        <div class="video-glow"></div>
                     </div>
                 </div>
             </div>
@@ -106,7 +117,7 @@
         </div>
     </section>
 
-    <!-- PORTFOLIO -->
+    <!-- PORTFOLIO COM SETAS DE NAVEGAÇÃO -->
     <section id="portfolio" class="featured-video-section">
         <div class="container">
             <div class="section-header-sm scroll-trigger">
@@ -114,34 +125,40 @@
                 <h3>Excelência em Detalhes</h3>
             </div>
             
-            <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <div class="video-glass-card">
-                            <video class="featured-video-player" autoplay loop muted playsinline>
-                                <source src="Video-239.mp4" type="video/mp4">
-                            </video>
-                            <div class="video-overlay"><h4>Ceramic Coating</h4></div>
+            <div class="swiper-container-relative">
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="video-glass-card">
+                                <video class="featured-video-player" autoplay loop muted playsinline>
+                                    <source src="Video-239.mp4" type="video/mp4">
+                                </video>
+                                <div class="video-overlay"><h4>Ceramic Coating</h4></div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="video-glass-card">
+                                <video class="featured-video-player" autoplay loop muted playsinline>
+                                    <source src="Video-807.mp4" type="video/mp4">
+                                </video>
+                                <div class="video-overlay"><h4>Nano Tech</h4></div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="video-glass-card">
+                                <video class="featured-video-player" autoplay loop muted playsinline>
+                                    <source src="Video-328 lancer.mp4" type="video/mp4">
+                                </video>
+                                <div class="video-overlay"><h4>High Gloss</h4></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="swiper-slide">
-                        <div class="video-glass-card">
-                            <video class="featured-video-player" autoplay loop muted playsinline>
-                                <source src="Video-807.mp4" type="video/mp4">
-                            </video>
-                            <div class="video-overlay"><h4>Nano Tech</h4></div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide">
-                        <div class="video-glass-card">
-                            <video class="featured-video-player" autoplay loop muted playsinline>
-                                <source src="Video-239.mp4" type="video/mp4">
-                            </video>
-                            <div class="video-overlay"><h4>High Gloss</h4></div>
-                        </div>
-                    </div>
+                    <!-- Paginação -->
+                    <div class="swiper-pagination"></div>
                 </div>
-                <div class="swiper-pagination"></div>
+                <!-- Setas de Navegação Personalizadas -->
+                <div class="swiper-button-next custom-nav"></div>
+                <div class="swiper-button-prev custom-nav"></div>
             </div>
         </div>
     </section>
@@ -233,7 +250,6 @@
     <!-- TOAST -->
     <div id="toast" class="toast">Enviado com sucesso!</div>
 
-    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script type="module" src="script.js"></script>
 </body>
