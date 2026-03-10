@@ -17,77 +17,226 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome (Ícones Oficiais) -->
+    <!-- Icons & Swiper -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Swiper -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-    <!-- Link para o teu CSS Externo -->
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- DESIGN SYSTEM PREMIUM --- */
+        :root {
+            --bg-dark: #050505;
+            --bg-card: rgba(18, 18, 18, 0.96);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --primary: #ffffff;
+            --gold: #d4af37;
+            --text-muted: #888888;
+            --font-title: 'Montserrat', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --transition-smooth: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        html { scroll-behavior: smooth; overflow-x: hidden; }
+        body { background: var(--bg-dark); color: var(--primary); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+        /* Background Effects */
+        .bg-fixed { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+        .gradient-orb { position: absolute; border-radius: 50%; filter: blur(140px); opacity: 0.15; background: var(--gold); }
+        .orb-top { width: 50vw; height: 50vw; top: -10%; left: -5%; }
+        .orb-bottom { width: 40vw; height: 40vw; bottom: -5%; right: -5%; opacity: 0.08; }
+        .grain-overlay { position: absolute; inset: 0; opacity: 0.03; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+        .container { max-width: 1250px; margin: 0 auto; padding: 0 40px; width: 100%; }
+
+        /* --- NAVBAR --- */
+        .navbar { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 35px 0; transition: var(--transition-smooth); }
+        .navbar.scrolled { background: rgba(5, 5, 5, 0.98); backdrop-filter: blur(25px); border-bottom: 1px solid var(--glass-border); padding: 18px 0; }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .logo-wrapper { display: flex; align-items: center; gap: 15px; text-decoration: none; }
+        .logo-img { height: 85px; transition: var(--transition-smooth); }
+        .navbar.scrolled .logo-img { height: 55px; }
+        .brand-text { font-family: var(--font-title); font-weight: 900; color: #fff; letter-spacing: 5px; text-transform: uppercase; font-size: 0.95rem; }
+
+        .nav-links { display: flex; gap: 40px; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: rgba(255,255,255,0.6); font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; transition: 0.3s; position: relative; }
+        .nav-links a:hover { color: #fff; }
+        .nav-links a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0; background: var(--gold); transition: 0.3s; }
+        
+        .btn-install-pwa { background: var(--gold); color: #000 !important; padding: 12px 28px; border-radius: 2px; cursor: pointer; font-weight: 900 !important; border: none; transition: 0.3s; }
+
+        /* --- HERO --- */
+        .hero { min-height: 100vh; display: flex; align-items: center; padding-top: 100px; }
+        .hero-wrapper { display: flex; align-items: center; justify-content: space-between; gap: 60px; width: 100%; }
+        .hero-content { flex: 1.2; }
+        .hero h1 { font-family: var(--font-title); font-size: 5rem; font-weight: 900; line-height: 0.9; margin-bottom: 35px; letter-spacing: -3px; }
+        .text-gradient { background: linear-gradient(to right, #fff, #999); -webkit-background-clip: text; color: transparent; }
+        .tagline { color: var(--gold); display: block; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 8px; font-weight: 700; font-size: 0.8rem; }
+        .hero p { color: var(--text-muted); font-size: 1.25rem; max-width: 580px; margin-bottom: 50px; font-weight: 300; }
+        .hero-actions { display: flex; align-items: center; gap: 45px; }
+
+        .btn-primary { background: #fff; color: #000; padding: 22px 45px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; text-decoration: none; transition: 0.4s; border-radius: 0; border: none; cursor: pointer; }
+        .btn-primary:hover { background: var(--gold); transform: translateY(-8px); box-shadow: 0 30px 60px rgba(212, 175, 55, 0.2); }
+
+        .hero-video-container { flex: 1; position: relative; display: flex; justify-content: flex-end; }
+        .video-frame { width: 100%; max-width: 450px; position: relative; border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border); box-shadow: 0 40px 80px rgba(0,0,0,0.8); background: #000; }
+        .hero-main-video { width: 100%; display: block; filter: brightness(1.1); }
+
+        /* Stats */
+        .stats-box { display: flex; gap: 30px; align-items: center; }
+        .stat strong { display: block; font-size: 1.8rem; color: #fff; font-family: var(--font-title); line-height: 1; }
+        .stat span { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 3px; }
+        .separator { width: 1px; height: 40px; background: rgba(255,255,255,0.1); }
+
+        /* --- FEATURES --- */
+        .features-section { padding: 140px 0; border-top: 1px solid var(--glass-border); }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+        .feature-card { background: var(--bg-card); padding: 70px 45px; border: 1px solid var(--glass-border); transition: var(--transition-smooth); border-radius: 4px; }
+        .feature-card:hover { border-color: var(--gold); transform: translateY(-10px); background: #0a0a0a; }
+        .feature-card i { font-size: 2.5rem; color: var(--gold); margin-bottom: 30px; display: block; }
+        .feature-card h3 { text-transform: uppercase; letter-spacing: 3px; margin-bottom: 25px; font-size: 1.15rem; font-weight: 900; }
+
+        /* --- PORTFOLIO SLIDER --- */
+        .featured-video-section { padding: 140px 0; background: #000; overflow: hidden; }
+        .section-header-sm { text-align: center; margin-bottom: 80px; }
+        .section-header-sm h3 { font-family: var(--font-title); font-size: 3.5rem; text-transform: uppercase; font-weight: 900; letter-spacing: -2px; }
+        
+        .swiper-container-relative { position: relative; width: 100%; max-width: 1400px; margin: 0 auto; }
+        .swiper { width: 100%; padding: 40px 0 80px 0 !important; }
+        .swiper-slide { width: 340px; height: 600px; transition: 0.8s; opacity: 0.2; transform: scale(0.85); filter: blur(4px); }
+        .swiper-slide-active { opacity: 1; transform: scale(1.05); filter: blur(0); }
+        .video-glass-card { width: 100%; height: 100%; background: #111; position: relative; overflow: hidden; border: 1px solid var(--glass-border); border-radius: 8px; }
+        .featured-video-player { width: 100%; height: 100%; object-fit: cover; }
+        
+        .custom-nav { color: var(--gold) !important; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); width: 65px !important; height: 65px !important; border-radius: 50%; border: 1px solid var(--glass-border); transition: 0.3s; z-index: 100; }
+        .custom-nav:hover { background: var(--gold); color: #000 !important; transform: scale(1.1); }
+        .custom-nav::after { font-size: 20px !important; font-weight: bold; }
+        .swiper-button-next { right: -30px !important; }
+        .swiper-button-prev { left: -30px !important; }
+
+        /* --- BOOKING --- */
+        .booking-section { padding: 140px 0; }
+        .booking-card { max-width: 950px; margin: 0 auto; background: var(--bg-card); padding: 100px; border: 1px solid var(--glass-border); border-radius: 4px; backdrop-filter: blur(15px); }
+        .form-header { text-align: center; margin-bottom: 70px; }
+        .form-header h2 { font-size: 3.2rem; text-transform: uppercase; font-weight: 900; margin-bottom: 15px; letter-spacing: -1px; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .input-group { position: relative; margin-bottom: 40px; }
+        .input-group input, .input-group select { width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 18px 0; color: #fff; font-size: 1.1rem; border-radius: 0; transition: 0.3s; }
+        .input-group label { position: absolute; left: 0; top: 18px; color: #555; pointer-events: none; transition: 0.3s; text-transform: uppercase; letter-spacing: 3px; font-size: 0.75rem; font-weight: 700; }
+        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label,
+        .input-group select:focus + label, .input-group select:valid + label { top: -20px; color: var(--gold); font-size: 0.65rem; }
+        
+        /* BOTÃO DE ENVIO COM ANIMAÇÃO */
+        .btn-submit { 
+            width: 100%; padding: 28px; background: #fff; color: #000; border: none; 
+            font-weight: 900; letter-spacing: 4px; cursor: pointer; transition: 0.4s; 
+            text-transform: uppercase; font-size: 1rem; display: flex; 
+            align-items: center; justify-content: center; gap: 15px;
+        }
+        .btn-submit:hover:not(:disabled) { background: var(--gold); transform: translateY(-5px); }
+        .btn-submit:disabled { background: #222; color: #666; cursor: not-allowed; }
+        .btn-submit.success { background: #25D366; color: #fff; }
+
+        /* --- FOOTER --- */
+        .footer { padding: 120px 0 60px; background: #020202; border-top: 1px solid var(--glass-border); }
+        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 100px; margin-bottom: 80px; }
+        .logo-img-footer { height: 75px; margin-bottom: 40px; }
+        .social-buttons { display: flex; gap: 25px; margin-top: 50px; }
+        .btn-social { display: flex; align-items: center; gap: 12px; padding: 16px 35px; border: 1px solid rgba(255,255,255,0.1); text-decoration: none; color: #fff; font-size: 0.8rem; letter-spacing: 2px; font-weight: 800; transition: all 0.5s ease; text-transform: uppercase; }
+        .btn-social.instagram:hover { background: linear-gradient(45deg, #f09433, #e1306c, #bc1888); transform: translateY(-8px); }
+        .btn-social.whatsapp:hover { background: #25D366; color: #000; transform: translateY(-8px); }
+
+        /* --- MINI-CINEMA OVERLAY --- */
+        .cinema-overlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .cinema-overlay.active { opacity: 1; visibility: visible; }
+        .cinema-content { text-align: center; max-width: 1000px; padding: 40px; }
+        .cinema-text { font-family: var(--font-title); font-size: 5rem; font-weight: 900; color: #fff; text-transform: uppercase; line-height: 0.9; opacity: 0; transform: translateY(40px); transition: 0.8s; }
+        .cinema-text.show { opacity: 1; transform: translateY(0); }
+        .cinema-tag { color: var(--gold); letter-spacing: 12px; font-size: 0.9rem; text-transform: uppercase; display: block; margin-bottom: 25px; font-weight: 700; opacity: 0; transition: 0.5s; }
+        .cinema-tag.show { opacity: 1; }
+        .flash-effect { position: absolute; inset: 0; background: #fff; opacity: 0; z-index: 100; pointer-events: none; }
+        .flash-effect.flashing { animation: cinematicFlash 1.5s forwards; }
+        @keyframes cinematicFlash { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+        .btn-skip-cinema { position: absolute; bottom: 60px; right: 60px; background: none; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 15px 35px; border-radius: 50px; cursor: pointer; text-transform: uppercase; letter-spacing: 3px; font-size: 0.75rem; transition: 0.3s; }
+
+        /* Scroll Reveal */
+        .scroll-trigger { opacity: 0; transform: translateY(50px); transition: 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        .scroll-trigger.is-visible { opacity: 1; transform: translateY(0); }
+
+        .mobile-menu-btn { display: none; background: none; border: none; color: #fff; font-size: 2rem; cursor: pointer; }
+
+        /* Toast */
+        .toast { position: fixed; bottom: 40px; right: 40px; background: #fff; color: #000; padding: 20px 40px; border-radius: 4px; transform: translateX(200%); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1); font-weight: 900; z-index: 3000; text-transform: uppercase; letter-spacing: 2px; }
+        .toast.show { transform: translateX(0); }
+
+        @media (max-width: 992px) {
+            .hero-wrapper { flex-direction: column; text-align: center; }
+            .hero h1 { font-size: 3rem; }
+            .hero-video-container { justify-content: center; }
+            .nav-links { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background: #050505; flex-direction: column; justify-content: center; transition: 0.6s; z-index: 1001; }
+            .nav-links.active { right: 0; }
+            .mobile-menu-btn { display: block; }
+            .grid-2, .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Fundo de Camadas -->
     <div class="bg-fixed">
         <div class="grain-overlay"></div>
         <div class="gradient-orb orb-top"></div>
         <div class="gradient-orb orb-bottom"></div>
     </div>
 
+    <!-- MINI-CINEMA -->
+    <div id="cinemaOverlay" class="cinema-overlay">
+        <div class="flash-effect" id="flashEffect"></div>
+        <div class="cinema-content">
+            <span class="cinema-tag" id="cinemaTag">INTRODUCING</span>
+            <div class="cinema-text" id="cinemaText">A ARTE DA PERFEIÇÃO</div>
+        </div>
+        <button class="btn-skip-cinema" onclick="Sistema.skipCinema()">Pular Cinema</button>
+    </div>
+
     <!-- NAVBAR -->
     <nav class="navbar" id="mainNav">
         <div class="container nav-container">
             <a href="#home" class="logo-wrapper">
-                <img src="BlackFilms.jpg" alt="BlackFilms Logo" class="logo-img" onerror="this.src='https://placehold.co/150x60/1a1a1a/d4af37?text=BLACKFILMS'">
+                <img src="BlackFilms.jpg" alt="Logo" class="logo-img" onerror="this.src='https://placehold.co/150x60/1a1a1a/d4af37?text=BLACKFILMS'">
                 <span class="brand-text">BlackFilms</span>
             </a>
-            
-            <button class="mobile-menu-btn" onclick="window.Sistema.toggleMenu()">
-                <i class="fa-solid fa-bars-staggered"></i>
-            </button>
-
+            <button class="mobile-menu-btn" onclick="Sistema.toggleMenu()"><i class="fa-solid fa-bars-staggered"></i></button>
             <ul class="nav-links" id="navLinks">
-                <li><a href="#home" onclick="window.Sistema.toggleMenu(true)">Início</a></li>
-                <li><a href="#portfolio" onclick="window.Sistema.toggleMenu(true)">Projetos</a></li>
-                <li><a href="#agendamento" class="btn-cta-nav" onclick="window.Sistema.toggleMenu(true)">Agendar</a></li>
-                <li id="li-install">
-                    <a onclick="window.Sistema.instalarApp()" class="btn-install-pwa">
-                        <i class="fa-solid fa-circle-down"></i> INSTALAR APP
-                    </a>
-                </li>
+                <li><a href="#home" onclick="Sistema.toggleMenu(true)">Início</a></li>
+                <li><a href="#portfolio" onclick="Sistema.toggleMenu(true)">Projetos</a></li>
+                <li><a href="#agendamento" class="btn-cta-nav" onclick="Sistema.toggleMenu(true)">Agendar</a></li>
+                <li><a onclick="Sistema.instalarApp()" class="btn-install-pwa">Instalar APP</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
+    <!-- HERO -->
     <main id="home" class="hero">
         <div class="container">
             <div class="hero-wrapper">
                 <div class="hero-content scroll-trigger">
-                    <span class="tagline">Engineering Perfection</span>
-                    <h1>
-                        <span class="text-gradient">Design de Elite</span><br>
-                        Proteção de Luxo.
-                    </h1>
-                    <p>Redefinimos o conceito de estética automotiva com tecnologia molecular e acabamento artesanal de alto padrão.</p>
-                    
+                    <span class="tagline">The Supreme Standard</span>
+                    <h1><span class="text-gradient">Design de Elite</span><br>Proteção de Luxo.</h1>
+                    <p>Referência incontestável em estética automotiva de alto padrão. Redefinimos o brilho através da alta engenharia e precisão artesanal.</p>
                     <div class="hero-actions">
                         <a href="#agendamento" class="btn-primary">Reserve sua Vaga</a>
                         <div class="stats-box">
-                            <div class="stat"><strong>250+</strong><span>Projetos</span></div>
+                            <div class="stat"><strong>250+</strong><span>Projetos Elite</span></div>
                             <div class="separator"></div>
-                            <div class="stat"><strong>9H</strong><span>Dureza</span></div>
+                            <div class="stat"><strong>9H</strong><span>Dureza Nível 1</span></div>
                         </div>
                     </div>
                 </div>
-
                 <div class="hero-video-container scroll-trigger">
                     <div class="video-frame">
                         <video autoplay loop muted playsinline class="hero-main-video">
                             <source src="Video-328 lancer.mp4" type="video/mp4">
                         </video>
-                        <div class="video-glow"></div>
                     </div>
                 </div>
             </div>
@@ -100,28 +249,28 @@
             <div class="features-grid">
                 <div class="feature-card scroll-trigger">
                     <i class="fa-solid fa-crown"></i>
-                    <h3>Qualidade Elite</h3>
-                    <p>Processos certificados com insumos importados para um brilho inigualável.</p>
+                    <h3>Qualidade Soberana</h3>
+                    <p>Processos certificados e insumos importados para um brilho que desafia a perfeição.</p>
                 </div>
                 <div class="feature-card scroll-trigger" style="transition-delay: 0.1s;">
                     <i class="fa-solid fa-shield-halved"></i>
-                    <h3>Nano Proteção</h3>
-                    <p>Barreira invisível contra riscos, agentes químicos e raios UV intensos.</p>
+                    <h3>Nano Tecnologia</h3>
+                    <p>Barreira invisível ultra-resistente contra riscos, químicos e raios UV intensos.</p>
                 </div>
                 <div class="feature-card scroll-trigger" style="transition-delay: 0.2s;">
                     <i class="fa-solid fa-fingerprint"></i>
-                    <h3>Exclusividade</h3>
-                    <p>Cada veículo é tratado como uma obra única, respeitando cada detalhe.</p>
+                    <h3>Tailor Made</h3>
+                    <p>Cada projeto é tratado como uma peça de arte exclusiva, respeitando cada linha do veículo.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- PORTFOLIO COM SETAS DE NAVEGAÇÃO -->
+    <!-- PROJETOS -->
     <section id="portfolio" class="featured-video-section">
         <div class="container">
             <div class="section-header-sm scroll-trigger">
-                <span class="tagline">Selected Portfolio</span>
+                <span class="tagline">Masterpieces</span>
                 <h3>Excelência em Detalhes</h3>
             </div>
             
@@ -133,7 +282,7 @@
                                 <video class="featured-video-player" autoplay loop muted playsinline>
                                     <source src="Video-239.mp4" type="video/mp4">
                                 </video>
-                                <div class="video-overlay"><h4>Ceramic Coating</h4></div>
+                                <div class="video-overlay"><h4>BMW X1</h4></div>
                             </div>
                         </div>
                         <div class="swiper-slide">
@@ -141,7 +290,7 @@
                                 <video class="featured-video-player" autoplay loop muted playsinline>
                                     <source src="Video-807.mp4" type="video/mp4">
                                 </video>
-                                <div class="video-overlay"><h4>Nano Tech</h4></div>
+                                <div class="video-overlay"><h4>MERCEDES A200</h4></div>
                             </div>
                         </div>
                         <div class="swiper-slide">
@@ -149,14 +298,12 @@
                                 <video class="featured-video-player" autoplay loop muted playsinline>
                                     <source src="Video-328 lancer.mp4" type="video/mp4">
                                 </video>
-                                <div class="video-overlay"><h4>High Gloss</h4></div>
+                                <div class="video-overlay"><h4>LANCER EVO</h4></div>
                             </div>
                         </div>
                     </div>
-                    <!-- Paginação -->
                     <div class="swiper-pagination"></div>
                 </div>
-                <!-- Setas de Navegação Personalizadas -->
                 <div class="swiper-button-next custom-nav"></div>
                 <div class="swiper-button-prev custom-nav"></div>
             </div>
@@ -169,7 +316,7 @@
             <div class="booking-card scroll-trigger">
                 <div class="form-header">
                     <h2>Solicitar Orçamento VIP</h2>
-                    <p>Vagas limitadas para garantir a perfeição em cada serviço.</p>
+                    <p>Vagas limitadas para garantir a exclusividade técnica em cada projeto.</p>
                 </div>
                 <form id="agendamento-form">
                     <div class="grid-2">
@@ -202,7 +349,9 @@
                         <input type="date" id="data" required>
                         <label>Data de Preferência</label>
                     </div>
-                    <button type="submit" id="btn-submit" class="btn-submit">ENVIAR SOLICITAÇÃO</button>
+                    <button type="submit" id="btn-submit" class="btn-submit">
+                        CONFIRMAR SOLICITAÇÃO
+                    </button>
                 </form>
             </div>
         </div>
@@ -214,7 +363,7 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <img src="BlackFilms.jpg" alt="Logo" class="logo-img-footer">
-                    <p>Referência em estética de luxo. Elevamos o padrão de cuidado automotivo através da ciência e paixão.</p>
+                    <p>Referência em estética de luxo. Tratamos o seu veículo como uma extensão do seu sucesso pessoal.</p>
                     <div class="social-buttons">
                         <a href="https://instagram.com/blackfilms_envelopamento" target="_blank" class="btn-social instagram">
                             <i class="fa-brands fa-instagram"></i> Instagram
@@ -225,9 +374,8 @@
                     </div>
                 </div>
                 <div class="footer-contact">
-                    <h4>Localização</h4>
-                    <p><i class="fa-solid fa-location-dot"></i> Lençóis Paulista, SP</p>
-                    <p>Av. Rio Grande do Sul, 100</p>
+                    <h4>Studio BlackFilms</h4>
+                    <p>Lençóis Paulista, SP | Av. Rio Grande do Sul, 100</p>
                     <p class="contact-highlight">(14) 99757-4185</p>
                 </div>
             </div>
@@ -237,20 +385,208 @@
         </div>
     </footer>
 
-    <!-- MODAL TRAILER -->
-    <div id="trailerModal" class="trailer-overlay">
-        <div class="trailer-content">
-            <div class="progress-bar-container" id="pBar"></div>
-            <button class="btn-skip" onclick="window.Sistema.fecharTrailer()">Pular Intro</button>
-            <div id="flashOverlay" class="flash-overlay"></div>
-            <div class="trailer-text-overlay" id="sceneContainer"></div>
-        </div>
-    </div>
-
-    <!-- TOAST -->
     <div id="toast" class="toast">Enviado com sucesso!</div>
 
+    <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCiJzwnUD7mRUaSnRlMZOOnmWQX1_E4IZ4",
+            authDomain: "blackfilms-8ad3d.firebaseapp.com",
+            projectId: "blackfilms-8ad3d",
+            storageBucket: "blackfilms-8ad3d.firebasestorage.app",
+            messagingSenderId: "681522651273",
+            appId: "1:681522651273:web:e4118a0dceaf401710e658",
+            measurementId: "G-FH60HZ19NG"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = 'blackfilms-8ad3d';
+
+        const Sistema = {
+            deferredPrompt: null,
+            menuOpen: false,
+            scenes: [
+                { tag: "ESTÉTICA DE LUXO", text: "A ARTE DA PERFEIÇÃO" },
+                { tag: "ALTA TECNOLOGIA", text: "NANO PROTEÇÃO 9H" },
+                { tag: "BLACKFILMS", text: "REDEFININDO O BRILHO" },
+                { tag: "BEM-VINDO", text: "EXPERIÊNCIA ELITE" }
+            ],
+            currentScene: 0,
+
+            init: async function() {
+                try { await signInAnonymously(auth); } catch(e) {}
+                this.cacheDom();
+                this.bindEvents();
+                this.initSwiper();
+                this.initNavbarEffect();
+                this.initScrollAnimations();
+                this.initPWA();
+                setTimeout(() => this.startCinema(), 500);
+            },
+
+            cacheDom: function() {
+                this.dom = {
+                    navbar: document.getElementById('mainNav'),
+                    form: document.getElementById('agendamento-form'),
+                    btnSubmit: document.getElementById('btn-submit'),
+                    toast: document.getElementById('toast'),
+                    phoneInput: document.getElementById('telefone'),
+                    scrollTriggers: document.querySelectorAll('.scroll-trigger'),
+                    cinemaOverlay: document.getElementById('cinemaOverlay'),
+                    cinemaText: document.getElementById('cinemaText'),
+                    cinemaTag: document.getElementById('cinemaTag'),
+                    flash: document.getElementById('flashEffect')
+                };
+            },
+
+            bindEvents: function() {
+                if(this.dom.form) this.dom.form.addEventListener('submit', (e) => this.salvarFirebase(e));
+                if(this.dom.phoneInput) {
+                    this.dom.phoneInput.addEventListener('input', (e) => {
+                        let v = e.target.value.replace(/\D/g, '');
+                        if (v.length > 11) v = v.slice(0, 11);
+                        if (v.length > 2) v = `(${v.substring(0,2)}) ${v.substring(2)}`;
+                        if (v.length > 9) v = `${v.substring(0,9)}-${v.substring(9)}`;
+                        e.target.value = v;
+                    });
+                }
+            },
+
+            startCinema: function() {
+                this.dom.cinemaOverlay.classList.add('active');
+                this.renderScene();
+            },
+
+            renderScene: function() {
+                const scene = this.scenes[this.currentScene];
+                this.dom.cinemaTag.classList.remove('show');
+                this.dom.cinemaText.classList.remove('show');
+                this.dom.flash.classList.remove('flashing');
+                void this.dom.flash.offsetWidth;
+                this.dom.flash.classList.add('flashing');
+                setTimeout(() => {
+                    this.dom.cinemaTag.innerText = scene.tag;
+                    this.dom.cinemaText.innerText = scene.text;
+                    this.dom.cinemaTag.classList.add('show');
+                    this.dom.cinemaText.classList.add('show');
+                }, 700);
+                setTimeout(() => {
+                    if (this.currentScene < this.scenes.length - 1) {
+                        this.currentScene++;
+                        this.renderScene();
+                    } else {
+                        setTimeout(() => this.skipCinema(), 2000);
+                    }
+                }, 4000);
+            },
+
+            skipCinema: function() { this.dom.cinemaOverlay.classList.remove('active'); },
+
+            toggleMenu: function(forceClose = false) {
+                const navLinks = document.getElementById('navLinks');
+                if (forceClose || this.menuOpen) { navLinks.classList.remove('active'); this.menuOpen = false; }
+                else { navLinks.classList.add('active'); this.menuOpen = true; }
+            },
+
+            initNavbarEffect: function() {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 80) this.dom.navbar.classList.add('scrolled');
+                    else this.dom.navbar.classList.remove('scrolled');
+                });
+            },
+
+            initScrollAnimations: function() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('is-visible'); });
+                }, { threshold: 0.1 });
+                this.dom.scrollTriggers.forEach(t => observer.observe(t));
+            },
+
+            initSwiper: function() {
+                new Swiper(".mySwiper", {
+                    effect: "coverflow", grabCursor: true, centeredSlides: true, slidesPerView: "auto",
+                    coverflowEffect: { rotate: 0, stretch: 0, depth: 150, modifier: 1, slideShadows: false },
+                    loop: true, autoplay: { delay: 4000, disableOnInteraction: false },
+                    pagination: { el: ".swiper-pagination", clickable: true },
+                    navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }
+                });
+            },
+
+            salvarFirebase: async function(e) {
+                e.preventDefault();
+                const btn = this.dom.btnSubmit;
+                const originalContent = btn.innerHTML;
+                
+                // ANIMAÇÃO DE ENVIANDO
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> ENVIANDO...';
+
+                try {
+                    const dados = {
+                        nome: document.getElementById('nome').value,
+                        telefone: document.getElementById('telefone').value,
+                        carro: document.getElementById('carro').value,
+                        servico: document.getElementById('servico').value,
+                        data: document.getElementById('data').value,
+                        timestamp: Date.now()
+                    };
+
+                    const col = collection(db, 'artifacts', appId, 'public', 'data', 'solicitacoes');
+                    await addDoc(col, dados);
+                    
+                    // ANIMAÇÃO DE SUCESSO NO BOTÃO
+                    btn.classList.add('success');
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> SOLICITAÇÃO ENVIADA';
+                    
+                    // Mostra Toast
+                    this.dom.toast.classList.add('show');
+                    setTimeout(() => this.dom.toast.classList.remove('show'), 4000);
+                    
+                    this.dom.form.reset();
+                    
+                    // Reset do botão após 3 segundos
+                    setTimeout(() => {
+                        btn.classList.remove('success');
+                        btn.innerHTML = originalContent;
+                        btn.disabled = false;
+                    }, 3000);
+
+                } catch (err) {
+                    btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ERRO AO ENVIAR';
+                    setTimeout(() => {
+                        btn.innerHTML = originalContent;
+                        btn.disabled = false;
+                    }, 3000);
+                }
+            },
+
+            initPWA: function() {
+                const manifest = {
+                    name: "BlackFilms Auto Spa", short_name: "BlackFilms", description: "Estética Automotiva Premium",
+                    start_url: "/", display: "standalone", background_color: "#050505", theme_color: "#d4af37",
+                    icons: [{ src: "BlackFilms.jpg", sizes: "192x192", type: "image/jpeg" }, { src: "BlackFilms.jpg", sizes: "512x512", type: "image/jpeg" }]
+                };
+                const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+                const link = document.createElement('link'); link.rel = 'manifest'; link.href = URL.createObjectURL(blob);
+                document.head.appendChild(link);
+                window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); this.deferredPrompt = e; });
+            },
+
+            instalarApp: async function() {
+                if (this.deferredPrompt) { this.deferredPrompt.prompt(); this.deferredPrompt = null; }
+                else { alert("Use o menu do navegador para instalar."); }
+            }
+        };
+
+        window.Sistema = Sistema;
+        document.addEventListener('DOMContentLoaded', () => Sistema.init());
+    </script>
 </body>
 </html>
